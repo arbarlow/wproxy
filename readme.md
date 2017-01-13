@@ -1,6 +1,6 @@
 # Weave Proxy
 
-The proxy is ritten in Go and only uses the stdlib. You should be able to...
+This proxy is written in Go and only uses the stdlib. You should be able to...
 
 ```
 get get github.com/arbarlow/wproxy
