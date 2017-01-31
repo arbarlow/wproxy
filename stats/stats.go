@@ -35,8 +35,10 @@ func NewStatRecorder() *StatRecord {
 	ticker := time.NewTicker(time.Second)
 	go func() {
 		for range ticker.C {
+			mutex.Lock()
 			sr.RequestRecords = append(sr.RequestRecords, 0)
 			sr.ResponseRecords = append(sr.ResponseRecords, 0)
+			mutex.Unlock()
 		}
 	}()
 
@@ -68,7 +70,8 @@ func (sr *StatRecord) RecordNak() {
 }
 
 func (sr *StatRecord) StatResponse() StatResponse {
-	return StatResponse{
+	mutex.Lock()
+	res := StatResponse{
 		MsgTotal:        sr.MsgTotal,
 		MsgReqTotal:     sr.MsgReqTotal,
 		MsgAckTotal:     sr.MsgAckTotal,
@@ -78,6 +81,8 @@ func (sr *StatRecord) StatResponse() StatResponse {
 		ResponseRate1s:  avg(sr.ResponseRecords),
 		ResponseRate10s: avg10(sr.ResponseRecords),
 	}
+	mutex.Unlock()
+	return res
 }
 func avg(xs []int) float64 {
 	total := float64(0)
